@@ -39,7 +39,7 @@ public class User {
 
 	@Column(name = "created_at")
 	private LocalDate createdAt;
-	@Column(name = "player_games")
+	@Column(name = "player_games", columnDefinition = "integer default 0")
 	private Integer playerGames;
 	@Column(name = "win_games")
 	private Integer winGames;

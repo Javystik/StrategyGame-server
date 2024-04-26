@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### ignored files ###
+/src/main/resources/db/game.db
