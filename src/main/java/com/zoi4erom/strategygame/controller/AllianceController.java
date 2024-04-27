@@ -5,6 +5,7 @@ import com.zoi4erom.strategygame.service.AllianceService;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/alliances")
 @AllArgsConstructor
+@CrossOrigin
 public class AllianceController {
 
 	private final AllianceService allianceService;
