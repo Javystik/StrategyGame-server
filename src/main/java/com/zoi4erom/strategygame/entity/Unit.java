@@ -1,11 +1,12 @@
 package com.zoi4erom.strategygame.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,13 +15,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "article")
-@AllArgsConstructor
+@Table(name = "unit")
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Article {
+public class Unit {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +29,18 @@ public class Article {
 
 	private String name;
 
-	private String description;
+	@Column(name = "health_points")
+	private int healthPoints;
 
+	private int damage;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	private int speed;
+
+	private int range;
+
+	private int level;
+
+	@OneToOne
+	@JoinColumn(name = "unit_type_id")
+	private UnitType unitType;
 }

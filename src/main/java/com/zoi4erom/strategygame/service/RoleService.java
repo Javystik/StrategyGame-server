@@ -12,7 +12,7 @@ public class RoleService {
 
 	private final RoleRepository roleRepository;
 
-	public Optional<Role> findRoleByName(String roleName) {
-		return roleRepository.findRoleByName(roleName);
+	public Role getUserRole() {
+		return roleRepository.findRoleByName("ROLE_USER").get();
 	}
 }

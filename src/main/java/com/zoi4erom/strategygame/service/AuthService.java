@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-//TODO вирішити костиль при реєстрації з вставкою дати та часу
 public class AuthService {
 
 	private UserService userService;
@@ -36,13 +35,6 @@ public class AuthService {
 			    .username(authRequest.getUsername())
 			    .password(authRequest.getPassword())
 			    .email(authRequest.getEmail())
-			    .createdAt(LocalDate.now())
-			    .playerGames(0)
-			    .winGames(0)
-			    .enemyUnitsKilled(0)
-			    .unitsDeaths(0)
-			    .territoriesCaptured(0)
-			    .territoriesLost(0)
 			    .build();
 			userService.createUser(user);
 			var userDetails = userDetailsService.loadUserByUsername(user.getUsername());

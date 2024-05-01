@@ -5,7 +5,7 @@ import com.zoi4erom.strategygame.entity.Alliance;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AllianceMapper implements Mapper<Alliance, AllianceDto>{
+public class AllianceMapper implements Mapper<Alliance, AllianceDto> {
 
 	@Override
 	public AllianceDto toDto(Alliance entity) {
