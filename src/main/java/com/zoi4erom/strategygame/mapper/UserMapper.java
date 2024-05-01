@@ -2,10 +2,14 @@ package com.zoi4erom.strategygame.mapper;
 
 import com.zoi4erom.strategygame.dto.UserDto;
 import com.zoi4erom.strategygame.entity.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper implements Mapper<User, UserDto>{
+@RequiredArgsConstructor
+public class UserMapper implements Mapper<User, UserDto> {
+
+	private final StatisticMapper statisticMapper;
 
 	@Override
 	public UserDto toDto(User entity) {
@@ -15,12 +19,7 @@ public class UserMapper implements Mapper<User, UserDto>{
 		    .email(entity.getEmail())
 		    .password(entity.getPassword())
 		    .createdAt(entity.getCreatedAt())
-		    .playerGames(entity.getPlayerGames())
-		    .winGames(entity.getWinGames())
-		    .enemyUnitsKilled(entity.getEnemyUnitsKilled())
-		    .unitsDeaths(entity.getUnitsDeaths())
-		    .territoriesCaptured(entity.getTerritoriesCaptured())
-		    .territoriesLost(entity.getTerritoriesLost())
+		    .statisticDto(statisticMapper.toDto(entity.getStatistic()))
 		    .build();
 	}
 
@@ -32,12 +31,7 @@ public class UserMapper implements Mapper<User, UserDto>{
 		    .email(dto.getEmail())
 		    .password(dto.getPassword())
 		    .createdAt(dto.getCreatedAt())
-		    .playerGames(dto.getPlayerGames())
-		    .winGames(dto.getWinGames())
-		    .enemyUnitsKilled(dto.getEnemyUnitsKilled())
-		    .unitsDeaths(dto.getUnitsDeaths())
-		    .territoriesCaptured(dto.getTerritoriesCaptured())
-		    .territoriesLost(dto.getTerritoriesLost())
+		    .statistic(statisticMapper.toEntity(dto.getStatisticDto()))
 		    .build();
 	}
 }

@@ -2,8 +2,13 @@ package com.zoi4erom.strategygame.service;
 
 import com.zoi4erom.strategygame.dto.UserDto;
 import com.zoi4erom.strategygame.entity.Role;
+import com.zoi4erom.strategygame.mapper.StatisticMapper;
 import com.zoi4erom.strategygame.mapper.UserMapper;
 import com.zoi4erom.strategygame.repository.UserRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -15,15 +20,17 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final RoleService roleService;
+	private final StatisticService statisticService;
 	private final UserMapper userMapper;
 
 	public void createUser(UserDto userDto) {
-		var entity = userMapper.toEntity(userDto);
-//		Role userRole = roleService.findRoleByName("ROLE_USER")
-//		    .orElseThrow(() -> new RuntimeException("User Role not found"));
-//		entity.getRoles().add(userRole);
+		userDto.setStatisticDto(statisticService.createStatistic());
+		var user = userMapper.toEntity(userDto);
 
-		userRepository.save(entity);
+		user.setRoles(List.of(roleService.getUserRole()));
+
+		user.setCreatedAt(LocalDateTime.now());
+		userRepository.save(user);
 	}
 
 	public List<UserDto> getAllUsers() {

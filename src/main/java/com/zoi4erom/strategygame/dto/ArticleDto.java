@@ -11,4 +11,5 @@ public class ArticleDto {
 	private Integer id;
 	private String name;
 	private String description;
+	private UserDto userDto;
 }

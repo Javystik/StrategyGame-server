@@ -8,10 +8,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,29 +36,35 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Column(name = "username")
 	private String username;
+
+	@Column(name = "password")
 	private String password;
+
+	@Column(name = "email")
 	private String email;
+
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "alliance_id")
 	private Alliance alliance;
 
-	@ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-	private List<Role> roles;
+	@OneToOne
+	@JoinColumn(name = "statistic_id")
+	private Statistic statistic;
 
-	@Column(name = "created_at")
-	private LocalDate createdAt;
-	@Column(name = "player_games", columnDefinition = "integer default 0")
-	private Integer playerGames;
-	@Column(name = "win_games")
-	private Integer winGames;
-	@Column(name = "enemy_units_killed")
-	private Integer enemyUnitsKilled;
-	@Column(name = "units_deaths")
-	private Integer unitsDeaths;
-	@Column(name = "territories_captured")
-	private Integer territoriesCaptured;
-	@Column(name = "territories_lost")
-	private Integer territoriesLost;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+	    name = "user_role",
+	    joinColumns = @JoinColumn(name = "user_id"),
+	    inverseJoinColumns = @JoinColumn(name = "role_id")
+	)
+	private Collection<Role> roles;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn
+	private List<Article> articles;
 }

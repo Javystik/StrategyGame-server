@@ -30,7 +30,11 @@ public class AllianceService {
 	}
 
 	public Optional<AllianceDto> getAllianceById(Integer id) {
-		return allianceRepository.findById(id)
-		    .map(allianceMapper::toDto);
+		var alliance = allianceRepository.findById(id)
+		    .orElseThrow(() -> new RuntimeException("Альянс по id: " + id + " не знайдено!"));
+		alliance.setMembersCount(allianceRepository.memberAllianceCount(id));
+		alliance.setTotalWins(allianceRepository.totalWins(id));
+
+		return Optional.ofNullable(allianceMapper.toDto(alliance));
 	}
 }
