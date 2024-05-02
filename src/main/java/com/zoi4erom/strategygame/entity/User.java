@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -64,7 +65,8 @@ public class User {
 	)
 	private Collection<Role> roles;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn
-	private List<Article> articles;
+	@Column(name = "verification_code")
+	private String verificationCode;
+	private Boolean isVerified;
+	private LocalDateTime codeDeathTime;
 }

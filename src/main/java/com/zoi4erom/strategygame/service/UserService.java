@@ -1,14 +1,10 @@
 package com.zoi4erom.strategygame.service;
 
 import com.zoi4erom.strategygame.dto.UserDto;
-import com.zoi4erom.strategygame.entity.Role;
-import com.zoi4erom.strategygame.mapper.StatisticMapper;
+import com.zoi4erom.strategygame.entity.User;
 import com.zoi4erom.strategygame.mapper.UserMapper;
 import com.zoi4erom.strategygame.repository.UserRepository;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -19,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
 	private final UserRepository userRepository;
-	private final RoleService roleService;
 	private final StatisticService statisticService;
 	private final UserMapper userMapper;
 
@@ -27,8 +22,7 @@ public class UserService {
 		userDto.setStatisticDto(statisticService.createStatistic());
 		var user = userMapper.toEntity(userDto);
 
-		user.setRoles(List.of(roleService.getUserRole()));
-
+		user.setIsVerified(false);
 		user.setCreatedAt(LocalDateTime.now());
 		userRepository.save(user);
 	}
@@ -50,4 +44,11 @@ public class UserService {
 		    .map(userMapper::toDto);
 	}
 
+	public Optional<UserDto> findUserByEmail(String email) {
+		return userRepository.findUserByEmail(email)
+		    .map(userMapper::toDto);
+	}
+	public void saveUser(User user){
+		userRepository.save(user);
+	}
 }
