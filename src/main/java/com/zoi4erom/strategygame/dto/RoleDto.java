@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class RoleDto {
 
-	private Integer id;
+	private Long id;
 	private String name;
 }

@@ -1,6 +1,7 @@
 package com.zoi4erom.strategygame.service;
 
 import com.zoi4erom.strategygame.entity.User;
+import com.zoi4erom.strategygame.exception.UserNotFoundException;
 import com.zoi4erom.strategygame.mapper.UserMapper;
 import com.zoi4erom.strategygame.service.contract.EmailService;
 import java.time.LocalDateTime;
@@ -17,11 +18,10 @@ public class VerifyService {
 
 	public boolean sendVerifyCode(String email) {
 		var user = userMapper.toEntity(userService.findUserByEmail(email).orElseThrow(
-		    () -> new RuntimeException("Юзер за поштою: " + email + " не знайдено!")
+		    () -> new UserNotFoundException("email", email)
 		));
 
-		user.setCodeDeathTime(LocalDateTime.now().plusSeconds(160));
-
+		user.setCodeDeathTime(LocalDateTime.now().plusSeconds(180));
 		user.setVerificationCode(emailService.sendRegistrationConfirmation(user.getEmail()));
 
 		userService.saveUser(user);
@@ -31,16 +31,21 @@ public class VerifyService {
 	public boolean verifyRegistration(String email, String code) {
 		User user = userMapper.toEntity(userService.findUserByEmail(email)
 		    .orElseThrow(
-			  () -> new RuntimeException("Юзер за поштою: " + email + " не знайдено!")
+			  () -> new UserNotFoundException("email", email)
 		    ));
 
-		if (user.getVerificationCode() != null && user.getVerificationCode().equals(code)
-		    && user.getCodeDeathTime().isAfter(LocalDateTime.now())) {
+		if (isVerificationCodeValid(user, code)) {
 			user.setIsVerified(true);
 			userService.saveUser(user);
 			return true;
 		}
 		return false;
+	}
+
+	private boolean isVerificationCodeValid(User user, String code) {
+		return user.getVerificationCode() != null &&
+		    user.getVerificationCode().equals(code) &&
+		    user.getCodeDeathTime().isAfter(LocalDateTime.now());
 	}
 
 }

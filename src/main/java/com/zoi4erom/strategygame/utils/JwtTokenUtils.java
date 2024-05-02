@@ -48,6 +48,7 @@ public class JwtTokenUtils {
 		return getAllClaimsFromToken(token).getSubject();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<String> getRoles(String token) {
 		return getAllClaimsFromToken(token).get("roles", List.class);
 	}

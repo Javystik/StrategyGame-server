@@ -11,13 +11,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +27,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+    uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
+	  @UniqueConstraint(columnNames = "email")})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -35,28 +39,35 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
+	@Size(max = 30)
+	@NotEmpty
 	@Column(name = "username")
 	private String username;
 
+	@NotEmpty
 	@Column(name = "password")
 	private String password;
 
+	@Size(max = 30)
 	@Column(name = "email")
 	private String email;
 
+	@NotNull
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name = "alliance_id")
 	private Alliance alliance;
 
-	@OneToOne
+	@NotEmpty
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "statistic_id")
 	private Statistic statistic;
 
+	@NotEmpty
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 	    name = "user_role",
@@ -69,4 +80,17 @@ public class User {
 	private String verificationCode;
 	private Boolean isVerified;
 	private LocalDateTime codeDeathTime;
+
+	@PrePersist
+	public void prePersist() {
+		if (this.createdAt == null) {
+			this.createdAt = LocalDateTime.now();
+		}
+		if (this.statistic == null) {
+			this.statistic = new Statistic();
+		}
+		if (this.isVerified == null) {
+			this.isVerified = false;
+		}
+	}
 }

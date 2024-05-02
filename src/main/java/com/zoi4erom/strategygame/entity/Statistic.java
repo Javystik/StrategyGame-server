@@ -26,32 +26,26 @@ public class Statistic {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
-	@Default
 	@Column(name = "player_games")
-	private Integer playerGames = 0;
+	private int playerGames;
 
-	@Default
 	@Column(name = "win_games")
-	private Integer winGames = 0;
+	private int winGames;
 
-	@Default
 	@Column(name = "enemy_units_killed")
-	private Integer enemyUnitsKilled = 0;
+	private int enemyUnitsKilled;
 
-	@Default
 	@Column(name = "units_deaths")
-	private Integer unitsDeaths = 0;
+	private int unitsDeaths;
 
-	@Default
 	@Column(name = "territories_captured")
-	private Integer territoriesCaptured = 0;
+	private int territoriesCaptured;
 
-	@Default
 	@Column(name = "territories_lost")
-	private Integer territoriesLost = 0;
+	private int territoriesLost;
 
-	@OneToOne(mappedBy = "statistic", cascade = CascadeType.MERGE)
+	@OneToOne(mappedBy = "statistic", cascade = {CascadeType.REMOVE})
 	private User user;
 }

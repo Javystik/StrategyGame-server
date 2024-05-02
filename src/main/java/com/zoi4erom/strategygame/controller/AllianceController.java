@@ -35,7 +35,7 @@ public class AllianceController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<AllianceDto> getAllianceById(@PathVariable Integer id) {
+	public ResponseEntity<AllianceDto> getAllianceById(@PathVariable Long id) {
 		return allianceService.getAllianceById(id)
 		    .map(ResponseEntity::ok)
 		    .orElse(ResponseEntity.notFound().build());

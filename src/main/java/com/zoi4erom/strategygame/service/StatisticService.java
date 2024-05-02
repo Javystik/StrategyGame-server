@@ -14,7 +14,7 @@ public class StatisticService {
 	private final StatisticRepository statisticRepository;
 	private final StatisticMapper statisticMapper;
 
-	public StatisticDto createStatistic() {
-		return statisticMapper.toDto(statisticRepository.save(new Statistic()));
+	public void saveStatistic(StatisticDto statisticDto){
+		statisticRepository.save(statisticMapper.toEntity(statisticDto));
 	}
 }

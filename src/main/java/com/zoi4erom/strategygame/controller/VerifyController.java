@@ -36,5 +36,4 @@ public class VerifyController {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-
 }

@@ -5,11 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface AllianceRepository extends JpaRepository<Alliance, Integer> {
+public interface AllianceRepository extends JpaRepository<Alliance, Long> {
 
 	@Query("SELECT COUNT(u) FROM User u WHERE u.alliance.id = :allianceId")
-	int memberAllianceCount(@Param("allianceId") Integer id);
+	int memberAllianceCount(@Param("allianceId") Long id);
 
 	@Query("SELECT SUM(u.statistic.winGames) FROM User u WHERE u.alliance.id = :allianceId")
-	int totalWins(@Param("allianceId") Integer allianceId);
+	int totalWins(@Param("allianceId") Long allianceId);
 }

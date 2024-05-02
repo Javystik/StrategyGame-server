@@ -1,6 +1,7 @@
 package com.zoi4erom.strategygame.service;
 
 import com.zoi4erom.strategygame.dto.AllianceDto;
+import com.zoi4erom.strategygame.exception.AllianceNotFoundException;
 import com.zoi4erom.strategygame.mapper.AllianceMapper;
 import com.zoi4erom.strategygame.repository.AllianceRepository;
 import java.util.List;
@@ -29,9 +30,11 @@ public class AllianceService {
 		    .toList();
 	}
 
-	public Optional<AllianceDto> getAllianceById(Integer id) {
+	public Optional<AllianceDto> getAllianceById(Long id) {
 		var alliance = allianceRepository.findById(id)
-		    .orElseThrow(() -> new RuntimeException("Альянс по id: " + id + " не знайдено!"));
+		    .orElseThrow(
+			  () -> new AllianceNotFoundException("id", id.toString())
+		    );
 		alliance.setMembersCount(allianceRepository.memberAllianceCount(id));
 		alliance.setTotalWins(allianceRepository.totalWins(id));
 

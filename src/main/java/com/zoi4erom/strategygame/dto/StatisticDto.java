@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 @Builder
 public class StatisticDto {
 
-	private Integer id;
-	private Integer playerGames;
-	private Integer winGames;
-	private Integer enemyUnitsKilled;
-	private Integer unitsDeaths;
-	private Integer territoriesCaptured;
-	private Integer territoriesLost;
+	private Long id;
+	private int playerGames;
+	private int winGames;
+	private int enemyUnitsKilled;
+	private int unitsDeaths;
+	private int territoriesCaptured;
+	private int territoriesLost;
 }

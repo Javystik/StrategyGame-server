@@ -1,5 +1,8 @@
 package com.zoi4erom.strategygame.service.impl;
 
+import com.zoi4erom.strategygame.exception.EmailSendingException;
+import com.zoi4erom.strategygame.exception.EmailTemplateLoadException;
+import com.zoi4erom.strategygame.service.VerificationCodeGenerator;
 import com.zoi4erom.strategygame.service.contract.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -7,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,15 +20,17 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImpl implements EmailService {
 
 	private final JavaMailSender emailSender;
+	private final VerificationCodeGenerator verificationCodeGenerator;
+
 	@Override
 	public String sendRegistrationConfirmation(String to) {
 		try {
-			var verificationCode = generateVerificationCode();
+			var verificationCode = verificationCodeGenerator.generateVerificationCode();
 
 			MimeMessage message = emailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-			String emailContent = loadEmailTemplate("registration-email-template.html");
+			String emailContent = loadEmailTemplate();
 			emailContent = emailContent.replace("[user email]", to);
 			emailContent = emailContent.replace("[Верифікаційний код]", verificationCode);
 
@@ -36,25 +40,15 @@ public class EmailServiceImpl implements EmailService {
 
 			emailSender.send(message);
 			return verificationCode;
-		} catch (MessagingException | IOException e) {
-			e.printStackTrace();
+		} catch (MessagingException e) {
+			throw new EmailSendingException(
+			    "Помилка при надсиланні листа підтвердження реєстрації на адресу: " + to);
 		}
-		return null;
 	}
 
-	@Override
-	public String generateVerificationCode() {
-		Random random = new Random();
-		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i <= 10; i++) {
-			stringBuilder.append(random.nextInt(10 ));
-		}
-		return stringBuilder.toString();
-	}
-
-	private String loadEmailTemplate(String path) throws IOException {
+	private String loadEmailTemplate() {
 		try (InputStream inputStream = getClass().getResourceAsStream(
-		    "/templates/" + path)) {
+		    "/templates/registration-email-template.html")) {
 			assert inputStream != null;
 			try (InputStreamReader reader = new InputStreamReader(inputStream,
 			    StandardCharsets.UTF_8)) {
@@ -66,6 +60,9 @@ public class EmailServiceImpl implements EmailService {
 				}
 				return content.toString();
 			}
+		} catch (IOException e) {
+			throw new EmailTemplateLoadException(
+			    "Failed to load email template: registration-email-template.html");
 		}
 	}
 }
