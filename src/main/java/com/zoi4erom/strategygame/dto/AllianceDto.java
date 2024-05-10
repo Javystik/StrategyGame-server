@@ -8,8 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AllianceDto {
+
 	private Long id;
 	private String name;
-	private int membersCount;
-	private int totalWins;
+	private String avatarBytes;
+	private String tag;
+	private UserDto leader;
+	private Integer membersCount;
+	private Integer totalWins;
 }

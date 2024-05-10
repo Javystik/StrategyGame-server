@@ -1,6 +1,6 @@
 package com.zoi4erom.strategygame.dto;
 
-import com.zoi4erom.strategygame.entity.Role;
+import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import lombok.Builder;
@@ -18,6 +18,8 @@ public class UserDto {
 	private String username;
 	private String email;
 	private String password;
+	private String avatarBytes;
+	private String clanTag;
 	private LocalDateTime createdAt;
 	private StatisticDto statisticDto;
 	private Collection<RoleDto> roles;

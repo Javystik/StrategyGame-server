@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 public interface AllianceRepository extends JpaRepository<Alliance, Long> {
 
 	@Query("SELECT COUNT(u) FROM User u WHERE u.alliance.id = :allianceId")
-	int memberAllianceCount(@Param("allianceId") Long id);
+	Integer memberAllianceCount(@Param("allianceId") Long id);
 
 	@Query("SELECT SUM(u.statistic.winGames) FROM User u WHERE u.alliance.id = :allianceId")
-	int totalWins(@Param("allianceId") Long allianceId);
+	Integer totalWins(@Param("allianceId") Long allianceId);
 }

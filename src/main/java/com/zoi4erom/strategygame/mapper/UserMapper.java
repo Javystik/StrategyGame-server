@@ -1,10 +1,8 @@
 package com.zoi4erom.strategygame.mapper;
 
 import com.zoi4erom.strategygame.dto.UserDto;
-import com.zoi4erom.strategygame.entity.Role;
 import com.zoi4erom.strategygame.entity.User;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.zoi4erom.strategygame.service.contract.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,14 +12,19 @@ public class UserMapper implements Mapper<User, UserDto> {
 
 	private final StatisticMapper statisticMapper;
 	private final RoleMapper roleMapper;
+	private final ImageService imageService;
 
 	@Override
 	public UserDto toDto(User entity) {
+		String clanTag = entity.getAlliance() != null ? entity.getAlliance().getTag() : null;
+
 		return UserDto.builder()
 		    .id(entity.getId())
 		    .username(entity.getUsername())
 		    .email(entity.getEmail())
 		    .password(entity.getPassword())
+		    .clanTag(clanTag)
+		    .avatarBytes(imageService.loadImageBase64(entity.getAvatarUrl()))
 		    .createdAt(entity.getCreatedAt())
 		    .statisticDto(statisticMapper.toDto(entity.getStatistic()))
 		    .roles(roleMapper.toDtoList(entity.getRoles()))

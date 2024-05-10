@@ -20,8 +20,7 @@ public class VerifyController {
 
 	@PostMapping("/registration")
 	public ResponseEntity<?> verifyRegistration(@RequestBody VerificationDto verificationDto) {
-		if (verifyService.verifyRegistration(verificationDto.getEmail(),
-		    verificationDto.getCode())) {
+		if (verifyService.verifyRegistration(verificationDto.getEmail(), verificationDto.getCode())) {
 			return ResponseEntity.ok().build();
 		} else {
 			return ResponseEntity.badRequest().build();

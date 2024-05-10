@@ -1,9 +1,10 @@
 CREATE TABLE users
 (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
-    username          VARCHAR(30) NOT NULL UNIQUE,
-    password          TEXT        NOT NULL,
-    email             VARCHAR(30) NOT NULL UNIQUE,
+    username          VARCHAR(30)  NOT NULL UNIQUE,
+    password          TEXT         NOT NULL,
+    email             VARCHAR(30)  NOT NULL UNIQUE,
+    avatar_url        VARCHAR(120) NOT NULL,
     created_at        DATE    DEFAULT CURRENT_TIMESTAMP,
     alliance_id       INTEGER DEFAULT NULL,
     statistic_id      INTEGER DEFAULT NULL,
@@ -26,18 +27,24 @@ CREATE TABLE statistic
 CREATE TABLE article
 (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    name        VARCHAR(120) NOT NULL,
-    description TEXT         NOT NULL,
-    user_id     INTEGER      NOT NULL,
+    name        VARCHAR(120) UNIQUE NOT NULL,
+    image_url   VARCHAR(120)        NOT NULL,
+    created_at  DATE DEFAULT CURRENT_TIMESTAMP,
+    description TEXT                NOT NULL,
+    user_id     INTEGER             NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 CREATE TABLE alliance
 (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    name          VARCHAR(30) NOT NULL,
-    members_count INT         NOT NULL,
-    total_wins    INT         NOT NULL
+    name          VARCHAR(30) UNIQUE NOT NULL,
+    avatar_url    VARCHAR(120)       NOT NULL,
+    tag           VARCHAR(5) UNIQUE  NOT NULL,
+    leader_id     INTEGER            NOT NULL,
+    members_count INT                NOT NULL,
+    total_wins    INT                NOT NULL,
+    FOREIGN KEY (leader_id) REFERENCES users (id)
 );
 CREATE TABLE unit_type
 (

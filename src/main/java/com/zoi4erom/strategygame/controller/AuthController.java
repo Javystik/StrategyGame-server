@@ -31,7 +31,11 @@ public class AuthController {
 	public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
 		try {
 			String token = authenticateService.authenticate(authRequest);
-			return ResponseEntity.ok(token);
+			if(token != null){
+				return ResponseEntity.ok(token);
+			}else{
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			}
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 			    .body("Authentication failed: " + e.getMessage());

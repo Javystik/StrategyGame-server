@@ -10,6 +10,7 @@ import lombok.Setter;
 public class ArticleDto {
 	private Long id;
 	private String name;
+	private String imageBytes;
 	private String description;
 	private UserDto userDto;
 }

@@ -6,7 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,7 +35,22 @@ public class Alliance {
 
 	@NotNull
 	@Size(max = 30)
+	@Column(unique = true)
 	private String name;
+
+	@NotNull
+	@Column(name = "avatar_url")
+	private String avatarUrl;
+
+	@NotNull
+	@Size(max = 5)
+	@Column(name = "tag", unique = true)
+	private String tag;
+
+	@NotNull
+	@OneToOne(cascade = {CascadeType.MERGE})
+	@JoinColumn(name = "leader_id", referencedColumnName = "id")
+	private User leader;
 
 	@NotNull
 	@Column(name = "members_count")
@@ -43,5 +61,18 @@ public class Alliance {
 	private Integer totalWins;
 
 	@OneToMany(mappedBy = "alliance", cascade = CascadeType.MERGE)
-	private List<User> users;
+	private List<User> clanMembers;
+
+	@PrePersist
+	public void prePersist() {
+		if (this.avatarUrl == null) {
+			this.avatarUrl = "base/clan-avatar.png";
+		}
+		if (this.membersCount == null) {
+			this.membersCount = 1;
+		}
+		if (this.totalWins == null) {
+			this.membersCount = leader.getStatistic().getWinGames();
+		}
+	}
 }

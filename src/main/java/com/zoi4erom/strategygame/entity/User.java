@@ -25,7 +25,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Entity
 @Table(name = "users",
     uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
@@ -41,7 +43,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Size(max = 30)
+	@Size(max = 40)
 	@NotEmpty
 	@Column(name = "username")
 	private String username;
@@ -50,9 +52,12 @@ public class User {
 	@Column(name = "password")
 	private String password;
 
-	@Size(max = 30)
+	@Size(max = 40)
 	@Column(name = "email")
 	private String email;
+
+	@NotNull
+	private String avatarUrl;
 
 	@NotNull
 	@Column(name = "created_at")
@@ -62,7 +67,6 @@ public class User {
 	@JoinColumn(name = "alliance_id")
 	private Alliance alliance;
 
-	@NotEmpty
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "statistic_id")
 	private Statistic statistic;
@@ -85,6 +89,9 @@ public class User {
 	public void prePersist() {
 		if (this.createdAt == null) {
 			this.createdAt = LocalDateTime.now();
+		}
+		if (this.avatarUrl == null) {
+			this.avatarUrl = "base/user-avatar.png";
 		}
 		if (this.statistic == null) {
 			this.statistic = new Statistic();
