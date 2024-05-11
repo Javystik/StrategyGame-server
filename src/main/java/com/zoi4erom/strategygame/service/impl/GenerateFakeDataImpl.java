@@ -1,16 +1,19 @@
-package com.zoi4erom.strategygame.service;
+package com.zoi4erom.strategygame.service.impl;
 
 import com.github.javafaker.Faker;
 import com.zoi4erom.strategygame.dto.AuthRequest;
+import com.zoi4erom.strategygame.service.contract.GenerateFakeData;
+import com.zoi4erom.strategygame.service.contract.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GenerateFakeData {
+public class GenerateFakeDataImpl implements GenerateFakeData {
 
 	private final UserService userService;
 
+	@Override
 	public void generateFakeAuthRequests(int count) {
 		Faker faker = new Faker();
 

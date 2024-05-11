@@ -1,15 +1,14 @@
 package com.zoi4erom.strategygame.controller;
 
 import com.zoi4erom.strategygame.dto.ArticleDto;
-import com.zoi4erom.strategygame.dto.UserDto;
-import com.zoi4erom.strategygame.service.ArticleService;
-import com.zoi4erom.strategygame.service.UserService;
+import com.zoi4erom.strategygame.service.contract.ArticleService;
+import com.zoi4erom.strategygame.service.contract.UserService;
+import com.zoi4erom.strategygame.service.impl.ArticleServiceImpl;
+import com.zoi4erom.strategygame.service.impl.UserServiceImpl;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;

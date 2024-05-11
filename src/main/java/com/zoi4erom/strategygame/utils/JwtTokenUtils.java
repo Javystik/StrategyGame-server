@@ -9,13 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.crypto.SecretKey;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-//TODO поміняти версію jwt токена на більш нову = поміняти методи на нові
+@Slf4j
 public class JwtTokenUtils {
 
 	@Value("${jwt.secret}")
@@ -35,6 +36,7 @@ public class JwtTokenUtils {
 
 		SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
+		log.info("Jwt Token was created");
 		return Jwts.builder()
 		    .setClaims(claims)
 		    .setSubject(userDetails.getUsername())

@@ -1,4 +1,4 @@
-package com.zoi4erom.strategygame.service;
+package com.zoi4erom.strategygame.service.impl;
 
 import com.zoi4erom.strategygame.dto.AllianceDto;
 import com.zoi4erom.strategygame.dto.ClanCreateDto;
@@ -8,7 +8,9 @@ import com.zoi4erom.strategygame.dto.search.AllianceSearch;
 import com.zoi4erom.strategygame.entity.Alliance;
 import com.zoi4erom.strategygame.mapper.AllianceMapper;
 import com.zoi4erom.strategygame.repository.AllianceRepository;
+import com.zoi4erom.strategygame.service.contract.AllianceService;
 import com.zoi4erom.strategygame.service.contract.ImageService;
+import com.zoi4erom.strategygame.service.contract.UserService;
 import com.zoi4erom.strategygame.service.impl.ImageServiceImpl.DefaultImagePatch;
 import com.zoi4erom.strategygame.spec.AllianceSpecification;
 import java.util.Objects;
@@ -22,13 +24,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class AllianceService {
+public class AllianceServiceImpl implements AllianceService {
 
 	private final AllianceRepository allianceRepository;
 	private final AllianceMapper allianceMapper;
 	private final UserService userService;
 	private final ImageService imageService;
 
+	@Override
 	public boolean createAlliance(ClanCreateDto clanCreateDto, UserDto leader) {
 		var user = userService.getUserEntityById(leader.getId()).orElseThrow();
 
@@ -50,7 +53,7 @@ public class AllianceService {
 		return true;
 	}
 
-
+	@Override
 	public Page<AllianceDto> getAllAllianceBySpecificationAndPagination(
 	    AllianceSearch allianceSearch, int pageNo, int pageSize) {
 		AllianceSpecification allianceSpecification = new AllianceSpecification(allianceSearch);
@@ -70,7 +73,7 @@ public class AllianceService {
 		return alliances.map(allianceMapper::toDto);
 	}
 
-
+	@Override
 	public Optional<AllianceDto> getAllianceById(Long id) {
 		return allianceRepository.findById(id)
 		    .map(alliance -> {
@@ -84,7 +87,8 @@ public class AllianceService {
 		    }).orElse(Optional.empty());
 	}
 
-	public Alliance getAllianceEntityById(Long id) {
+	@Override
+	public Optional<Alliance> getAllianceEntityById(Long id) {
 		var alliance = allianceRepository.findById(id).orElseThrow();
 
 		Integer membersCount = allianceRepository.memberAllianceCount(id);
@@ -93,11 +97,12 @@ public class AllianceService {
 		alliance.setMembersCount(membersCount);
 		alliance.setTotalWins(totalWins);
 
-		return alliance;
+		return Optional.of(alliance);
 	}
 
+	@Override
 	public boolean changeClanAvatar(UpdateClanAvatarDto updateClanAvatarDto, String username) {
-		var alliance = getAllianceEntityById(updateClanAvatarDto.getClanId());
+		var alliance = getAllianceEntityById(updateClanAvatarDto.getClanId()).get();
 		var user = userService.getUserByUsername(username).orElseThrow();
 
 		if (alliance.getLeader().getId().equals(user.getId())) {

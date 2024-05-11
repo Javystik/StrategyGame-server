@@ -4,9 +4,12 @@ import com.zoi4erom.strategygame.dto.UpdateUserAvatarDto;
 import com.zoi4erom.strategygame.dto.UpdateUserDto;
 import com.zoi4erom.strategygame.dto.UserDto;
 import com.zoi4erom.strategygame.dto.search.UserSearch;
-import com.zoi4erom.strategygame.service.AllianceService;
-import com.zoi4erom.strategygame.service.GenerateFakeData;
-import com.zoi4erom.strategygame.service.UserService;
+import com.zoi4erom.strategygame.service.contract.AllianceService;
+import com.zoi4erom.strategygame.service.contract.GenerateFakeData;
+import com.zoi4erom.strategygame.service.contract.UserService;
+import com.zoi4erom.strategygame.service.impl.AllianceServiceImpl;
+import com.zoi4erom.strategygame.service.impl.GenerateFakeDataImpl;
+import com.zoi4erom.strategygame.service.impl.UserServiceImpl;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -98,7 +101,7 @@ public class UserController {
 	@GetMapping("/alliance/join/{clanId}")
 	public ResponseEntity<?> joinTheClan(@PathVariable Long clanId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		var alliance = allianceService.getAllianceEntityById(clanId);
+		var alliance = allianceService.getAllianceEntityById(clanId).orElseThrow();
 
 		if(userService.joinUserWithClan(authentication.getName(), alliance)){
 			return ResponseEntity.ok().build();

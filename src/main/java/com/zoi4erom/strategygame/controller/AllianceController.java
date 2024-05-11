@@ -5,8 +5,8 @@ import com.zoi4erom.strategygame.dto.ClanCreateDto;
 import com.zoi4erom.strategygame.dto.UpdateClanAvatarDto;
 import com.zoi4erom.strategygame.dto.search.AllianceSearch;
 import com.zoi4erom.strategygame.exception.UserNotFoundException;
-import com.zoi4erom.strategygame.service.AllianceService;
-import com.zoi4erom.strategygame.service.UserService;
+import com.zoi4erom.strategygame.service.contract.AllianceService;
+import com.zoi4erom.strategygame.service.contract.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +36,9 @@ public class AllianceController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		var user = userService.getUserByUsername(authentication.getName())
 		    .orElseThrow(() -> new UserNotFoundException("username", authentication.getName()));
-		if (allianceService.createAlliance(clanCreateDto, user)){
+		if (allianceService.createAlliance(clanCreateDto, user)) {
 			return ResponseEntity.ok().build();
-		}else{
+		} else {
 			return ResponseEntity.badRequest().build();
 		}
 	}

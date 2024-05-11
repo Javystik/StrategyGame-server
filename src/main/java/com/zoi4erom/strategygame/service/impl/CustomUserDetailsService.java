@@ -1,4 +1,4 @@
-package com.zoi4erom.strategygame.service;
+package com.zoi4erom.strategygame.service.impl;
 
 import com.zoi4erom.strategygame.repository.UserRepository;
 import com.zoi4erom.strategygame.security.CustomUserDetails;

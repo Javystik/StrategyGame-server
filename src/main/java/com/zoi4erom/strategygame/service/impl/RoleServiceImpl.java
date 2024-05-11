@@ -1,14 +1,15 @@
-package com.zoi4erom.strategygame.service;
+package com.zoi4erom.strategygame.service.impl;
 
 import com.zoi4erom.strategygame.entity.Role;
 import com.zoi4erom.strategygame.exception.RoleNotFoundException;
 import com.zoi4erom.strategygame.repository.RoleRepository;
+import com.zoi4erom.strategygame.service.contract.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RoleService {
+public class RoleServiceImpl implements RoleService {
 
 	private final RoleRepository roleRepository;
 

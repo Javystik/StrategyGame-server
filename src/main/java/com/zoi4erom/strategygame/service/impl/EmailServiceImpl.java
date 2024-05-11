@@ -2,8 +2,8 @@ package com.zoi4erom.strategygame.service.impl;
 
 import com.zoi4erom.strategygame.exception.EmailSendingException;
 import com.zoi4erom.strategygame.exception.EmailTemplateLoadException;
-import com.zoi4erom.strategygame.service.VerificationCodeGenerator;
 import com.zoi4erom.strategygame.service.contract.EmailService;
+import com.zoi4erom.strategygame.service.contract.VerificationCodeGenerator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;

@@ -1,6 +1,5 @@
 package com.zoi4erom.strategygame.security;
 
-import com.zoi4erom.strategygame.exception.JwtExpiredException;
 import com.zoi4erom.strategygame.utils.JwtTokenUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -10,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
 	private final JwtTokenUtils jwtTokenUtils;
@@ -36,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			try {
 				username = jwtTokenUtils.getUsername(jwt);
 			} catch (ExpiredJwtException e) {
-				throw new JwtExpiredException("JWT Token Expired");
+				log.info("Jwt Token is Expired");
 			}
 		}
 		if (username != null

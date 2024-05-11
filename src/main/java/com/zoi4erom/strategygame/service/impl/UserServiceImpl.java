@@ -1,4 +1,4 @@
-package com.zoi4erom.strategygame.service;
+package com.zoi4erom.strategygame.service.impl;
 
 import com.zoi4erom.strategygame.dto.AuthRequest;
 import com.zoi4erom.strategygame.dto.UpdateUserAvatarDto;
@@ -10,7 +10,9 @@ import com.zoi4erom.strategygame.entity.User;
 import com.zoi4erom.strategygame.exception.UserNotFoundException;
 import com.zoi4erom.strategygame.mapper.UserMapper;
 import com.zoi4erom.strategygame.repository.UserRepository;
-import com.zoi4erom.strategygame.service.impl.ImageServiceImpl;
+import com.zoi4erom.strategygame.service.contract.ImageService;
+import com.zoi4erom.strategygame.service.contract.RoleService;
+import com.zoi4erom.strategygame.service.contract.UserService;
 import com.zoi4erom.strategygame.service.impl.ImageServiceImpl.DefaultImagePatch;
 import com.zoi4erom.strategygame.spec.UserSpecification;
 import java.util.List;
@@ -28,14 +30,15 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class UserService {
+public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 	private final RoleService roleService;
-	private final ImageServiceImpl imageService;
+	private final ImageService imageService;
 
+	@Override
 	public void createUser(AuthRequest authRequest) {
 		User user = User.builder()
 		    .username(authRequest.getUsername())
@@ -45,11 +48,12 @@ public class UserService {
 		    .build();
 		try {
 			userRepository.save(user);
+			log.info("User created successfully: {}", user.getUsername());
 		} catch (Exception e) {
-			log.error("Помилка при створенні юзера! Можлива помилка валідації");
+			log.error("Error creating user: {}", e.getMessage());
 		}
 	}
-
+	@Override
 	public List<UserDto> getAllUsers() {
 		Sort sort = Sort.by(Direction.DESC, "statistic.winGames");
 		return userRepository.findAll(sort)
@@ -57,7 +61,7 @@ public class UserService {
 		    .map(userMapper::toDto)
 		    .toList();
 	}
-
+	@Override
 	public Page<UserDto> getAllUsersBySpecificationAndPagination(UserSearch userSearch,
 	    int pageNo, int pageSize) {
 		Sort sort = Sort.by(Sort.Direction.DESC, "statistic.winGames");
@@ -66,44 +70,44 @@ public class UserService {
 		Page<User> usersPage = userRepository.findAll(userSpecification, pageable);
 		return usersPage.map(userMapper::toDto);
 	}
-
+	@Override
 	public Optional<UserDto> getUserByUsername(String username) {
 		return userRepository.findUserByUsername(username)
 		    .map(userMapper::toDto);
 	}
-
+	@Override
 	public Optional<UserDto> getUserById(Long id) {
 		return userRepository.findById(id)
 		    .map(userMapper::toDto);
 	}
-
+	@Override
 	public Optional<User> getUserEntityById(Long id) {
 		return userRepository.findById(id);
 	}
-
+	@Override
 	public Optional<UserDto> findUserByEmail(String email) {
 		return userRepository.findUserByEmail(email)
 		    .map(userMapper::toDto);
 	}
-
+	@Override
 	public List<UserDto> findUserByAllianceId(Long allianceId) {
 		return userRepository.findUserByAlliance_Id(allianceId)
 		    .stream()
 		    .map(userMapper::toDto)
 		    .toList();
 	}
-
+	@Override
 	public Long getClanIdByUserName(String userName) {
 		var user = userRepository.findUserByUsername(userName).orElseThrow(
 		    () -> new UserNotFoundException("username", userName)
 		);
 		return user.getAlliance().getId();
 	}
-
+	@Override
 	public void saveUser(User user) {
 		userRepository.save(user);
 	}
-
+	@Override
 	public void updateAvatar(UpdateUserAvatarDto updateUserAvatarDto) {
 		User user = getUserEntityById(updateUserAvatarDto.getUserId()).orElseThrow(
 		    () -> new UserNotFoundException("id", updateUserAvatarDto.getUserId().toString())
@@ -114,27 +118,29 @@ public class UserService {
 
 		userRepository.save(user);
 	}
-
-	public boolean leaveUserWithClan(String username){
+	@Override
+	public boolean leaveUserWithClan(String username) {
 		var user = getUserByUsername(username).orElseThrow();
 
-		if (getUserEntityById(user.getId()).get().getAlliance() != null){
+		if (getUserEntityById(user.getId()).get().getAlliance() != null) {
 			updateUserAlliance(null, user.getId());
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
-	public boolean joinUserWithClan(String username, Alliance alliance){
+	@Override
+	public boolean joinUserWithClan(String username, Alliance alliance) {
 		var user = getUserByUsername(username).orElseThrow();
 
-		if (getUserEntityById(user.getId()).get().getAlliance() != null){
+		if (getUserEntityById(user.getId()).get().getAlliance() == null) {
 			updateUserAlliance(alliance, user.getId());
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
+	@Override
 	public void updateUserAlliance(Alliance alliance, Long id) {
 		User user = getUserEntityById(id).orElseThrow(
 		    () -> new UserNotFoundException("id", id.toString())
@@ -143,7 +149,7 @@ public class UserService {
 
 		userRepository.save(user);
 	}
-
+	@Override
 	public void updateUser(UpdateUserDto updateUserDto, String username) {
 		var userForUpdate = getUserByUsername(username).orElseThrow();
 		var user = getUserEntityById(userForUpdate.getId()).orElseThrow();

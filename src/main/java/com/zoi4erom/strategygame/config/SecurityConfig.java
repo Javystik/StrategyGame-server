@@ -28,8 +28,7 @@ public class SecurityConfig {
 		    .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 		    .authorizeHttpRequests(
 			  auth -> auth
-				.requestMatchers("/auth/login", "/auth/register",
-				    "/verify/registration", "/verify/send-code", "/users").permitAll()
+				.requestMatchers("/auth/login", "/auth/register").permitAll()
 				.anyRequest().authenticated()
 		    )
 		    .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(

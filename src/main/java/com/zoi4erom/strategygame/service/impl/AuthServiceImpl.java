@@ -1,6 +1,8 @@
-package com.zoi4erom.strategygame.service;
+package com.zoi4erom.strategygame.service.impl;
 
 import com.zoi4erom.strategygame.dto.AuthRequest;
+import com.zoi4erom.strategygame.service.contract.AuthService;
+import com.zoi4erom.strategygame.service.contract.UserService;
 import com.zoi4erom.strategygame.utils.JwtTokenUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,13 +11,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
 
 	private UserService userService;
 	private UserDetailsService userDetailsService;
 	private final JwtTokenUtils jwtTokenUtils;
 	private final PasswordEncoder passwordEncoder;
 
+	@Override
 	public String authenticate(AuthRequest authRequest) {
 		var userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
 
@@ -24,7 +27,7 @@ public class AuthService {
 		}
 		return null;
 	}
-
+	@Override
 	public String createUser(AuthRequest authRequest) {
 		userService.createUser(authRequest);
 		return jwtTokenUtils.generateToken(
