@@ -3,11 +3,12 @@ package com.zoi4erom.strategygame.controller;
 import com.zoi4erom.strategygame.dto.AllianceDto;
 import com.zoi4erom.strategygame.dto.ClanCreateDto;
 import com.zoi4erom.strategygame.dto.UpdateClanAvatarDto;
+import com.zoi4erom.strategygame.dto.search.AllianceSearch;
 import com.zoi4erom.strategygame.exception.UserNotFoundException;
 import com.zoi4erom.strategygame.service.AllianceService;
 import com.zoi4erom.strategygame.service.UserService;
-import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,13 +36,20 @@ public class AllianceController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		var user = userService.getUserByUsername(authentication.getName())
 		    .orElseThrow(() -> new UserNotFoundException("username", authentication.getName()));
-		allianceService.createAlliance(clanCreateDto, user);
-		return ResponseEntity.ok("Alliance successfully created");
+		if (allianceService.createAlliance(clanCreateDto, user)){
+			return ResponseEntity.ok().build();
+		}else{
+			return ResponseEntity.badRequest().build();
+		}
 	}
 
-	@GetMapping
-	public ResponseEntity<List<AllianceDto>> getAllAlliance() {
-		var allAlliances = allianceService.getAllAlliance();
+	@PostMapping("/by-specification")
+	public ResponseEntity<Page<AllianceDto>> getAllAlliance(
+	    @RequestBody AllianceSearch allianceSearch,
+	    @RequestParam(name = "pageNo", required = false, defaultValue = "0") int pageNo,
+	    @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize) {
+		var allAlliances = allianceService.getAllAllianceBySpecificationAndPagination(
+		    allianceSearch, pageNo, pageSize);
 
 		return allAlliances.isEmpty() ? ResponseEntity.noContent().build()
 		    : ResponseEntity.ok(allAlliances);

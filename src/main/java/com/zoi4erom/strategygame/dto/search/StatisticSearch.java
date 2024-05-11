@@ -1,18 +1,19 @@
 package com.zoi4erom.strategygame.dto.search;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class StatisticSearch {
 
-	private Range<Integer> playerGames;
 	private Range<Integer> winGames;
-	private Range<Integer> enemyUnitsKilled;
-	private Range<Integer> unitsDeaths;
-	private Range<Integer> territoriesCaptured;
-	private Range<Integer> territoriesLost;
 }

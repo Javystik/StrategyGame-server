@@ -4,6 +4,7 @@ import com.zoi4erom.strategygame.dto.AuthRequest;
 import com.zoi4erom.strategygame.dto.UpdateUserAvatarDto;
 import com.zoi4erom.strategygame.dto.UpdateUserDto;
 import com.zoi4erom.strategygame.dto.UserDto;
+import com.zoi4erom.strategygame.dto.search.UserSearch;
 import com.zoi4erom.strategygame.entity.Alliance;
 import com.zoi4erom.strategygame.entity.User;
 import com.zoi4erom.strategygame.exception.UserNotFoundException;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,11 +58,13 @@ public class UserService {
 		    .toList();
 	}
 
-	public List<UserDto> getAllUsersBySpecification(UserSpecification userSpecification) {
-		return userRepository.findAll(userSpecification)
-		    .stream()
-		    .map(userMapper::toDto)
-		    .toList();
+	public Page<UserDto> getAllUsersBySpecificationAndPagination(UserSearch userSearch,
+	    int pageNo, int pageSize) {
+		Sort sort = Sort.by(Sort.Direction.DESC, "statistic.winGames");
+		UserSpecification userSpecification = new UserSpecification(userSearch);
+		Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+		Page<User> usersPage = userRepository.findAll(userSpecification, pageable);
+		return usersPage.map(userMapper::toDto);
 	}
 
 	public Optional<UserDto> getUserByUsername(String username) {
@@ -109,6 +115,26 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	public boolean leaveUserWithClan(String username){
+		var user = getUserByUsername(username).orElseThrow();
+
+		if (getUserEntityById(user.getId()).get().getAlliance() != null){
+			updateUserAlliance(null, user.getId());
+			return true;
+		}else {
+			return false;
+		}
+	}
+	public boolean joinUserWithClan(String username, Alliance alliance){
+		var user = getUserByUsername(username).orElseThrow();
+
+		if (getUserEntityById(user.getId()).get().getAlliance() != null){
+			updateUserAlliance(alliance, user.getId());
+			return true;
+		}else {
+			return false;
+		}
+	}
 	public void updateUserAlliance(Alliance alliance, Long id) {
 		User user = getUserEntityById(id).orElseThrow(
 		    () -> new UserNotFoundException("id", id.toString())
@@ -117,15 +143,16 @@ public class UserService {
 
 		userRepository.save(user);
 	}
-	public void updateUser(UpdateUserDto updateUserDto, String username){
+
+	public void updateUser(UpdateUserDto updateUserDto, String username) {
 		var userForUpdate = getUserByUsername(username).orElseThrow();
 		var user = getUserEntityById(userForUpdate.getId()).orElseThrow();
 
-		if(updateUserDto.getEmail() != null){
+		if (updateUserDto.getEmail() != null) {
 			user.setEmail(updateUserDto.getEmail());
 		}
 
-		if (updateUserDto.getPassword() != null && !updateUserDto.getPassword().isBlank()){
+		if (updateUserDto.getPassword() != null && !updateUserDto.getPassword().isBlank()) {
 			user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
 		}
 

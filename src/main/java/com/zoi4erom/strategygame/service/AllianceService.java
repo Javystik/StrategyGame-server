@@ -4,15 +4,20 @@ import com.zoi4erom.strategygame.dto.AllianceDto;
 import com.zoi4erom.strategygame.dto.ClanCreateDto;
 import com.zoi4erom.strategygame.dto.UpdateClanAvatarDto;
 import com.zoi4erom.strategygame.dto.UserDto;
+import com.zoi4erom.strategygame.dto.search.AllianceSearch;
 import com.zoi4erom.strategygame.entity.Alliance;
 import com.zoi4erom.strategygame.mapper.AllianceMapper;
 import com.zoi4erom.strategygame.repository.AllianceRepository;
 import com.zoi4erom.strategygame.service.contract.ImageService;
 import com.zoi4erom.strategygame.service.impl.ImageServiceImpl.DefaultImagePatch;
-import java.util.List;
+import com.zoi4erom.strategygame.spec.AllianceSpecification;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +29,7 @@ public class AllianceService {
 	private final UserService userService;
 	private final ImageService imageService;
 
-	public void createAlliance(ClanCreateDto clanCreateDto, UserDto leader) {
+	public boolean createAlliance(ClanCreateDto clanCreateDto, UserDto leader) {
 		var user = userService.getUserEntityById(leader.getId()).orElseThrow();
 
 		var alliance = Alliance.builder()
@@ -35,13 +40,23 @@ public class AllianceService {
 		    .membersCount(1)
 		    .build();
 
-		var savedAlliance = allianceRepository.save(alliance);
+		Alliance savedAlliance = null;
+		try {
+			savedAlliance = allianceRepository.save(alliance);
+		} catch (Exception e) {
+			return false;
+		}
 		userService.updateUserAlliance(savedAlliance, user.getId());
+		return true;
 	}
 
 
-	public List<AllianceDto> getAllAlliance() {
-		List<Alliance> alliances = allianceRepository.findAll();
+	public Page<AllianceDto> getAllAllianceBySpecificationAndPagination(
+	    AllianceSearch allianceSearch, int pageNo, int pageSize) {
+		AllianceSpecification allianceSpecification = new AllianceSpecification(allianceSearch);
+		Sort sort = Sort.by(Sort.Direction.DESC, "totalWins");
+		Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+		Page<Alliance> alliances = allianceRepository.findAll(allianceSpecification, pageable);
 
 		alliances.forEach(alliance -> {
 			Long allianceId = alliance.getId();
@@ -52,9 +67,7 @@ public class AllianceService {
 			alliance.setTotalWins(Objects.requireNonNullElse(totalWins, 0));
 		});
 
-		return alliances.stream()
-		    .map(allianceMapper::toDto)
-		    .toList();
+		return alliances.map(allianceMapper::toDto);
 	}
 
 
@@ -88,8 +101,9 @@ public class AllianceService {
 		var user = userService.getUserByUsername(username).orElseThrow();
 
 		if (alliance.getLeader().getId().equals(user.getId())) {
-			alliance.setAvatarUrl(imageService.saveImageBase64(updateClanAvatarDto.getBase64Image(),
-			    alliance.getAvatarUrl(), DefaultImagePatch.CLAN_AVATAR));
+			alliance.setAvatarUrl(
+			    imageService.saveImageBase64(updateClanAvatarDto.getBase64Image(),
+				  alliance.getAvatarUrl(), DefaultImagePatch.CLAN_AVATAR));
 			allianceRepository.save(alliance);
 			return true;
 		}

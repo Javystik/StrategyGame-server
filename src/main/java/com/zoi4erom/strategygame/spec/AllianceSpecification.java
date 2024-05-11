@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 
 @AllArgsConstructor
@@ -16,39 +16,33 @@ public class AllianceSpecification implements Specification<Alliance> {
 	transient AllianceSearch allianceSearch;
 
 	@Override
-	public Predicate toPredicate(Root<Alliance> root, CriteriaQuery<?> query,
+	public Predicate toPredicate(@NonNull Root<Alliance> root, @NonNull CriteriaQuery<?> query,
 	    CriteriaBuilder criteriaBuilder) {
 		Predicate predicate = criteriaBuilder.conjunction();
 
-		if (allianceSearch.getName() != null && !allianceSearch.getName().isEmpty()) {
-			predicate = criteriaBuilder.and(predicate,
-			    criteriaBuilder.equal(root.get("name"), allianceSearch.getName()));
+		if (allianceSearch != null) {
+			predicate = idPredicate(root, criteriaBuilder, predicate);
+			predicate = namePredicate(root, criteriaBuilder, predicate);
 		}
 
-		if (allianceSearch.getFromMembersCount() != null) {
-			predicate = criteriaBuilder.and(predicate,
-			    criteriaBuilder.greaterThanOrEqualTo(root.get("membersCount"),
-				  allianceSearch.getFromMembersCount()));
-		}
+		return predicate;
+	}
 
-		if (allianceSearch.getToMembersCount() != null) {
+	private Predicate idPredicate(Root<Alliance> root, CriteriaBuilder criteriaBuilder,
+	    Predicate predicate) {
+		if (allianceSearch.getId() != null) {
 			predicate = criteriaBuilder.and(predicate,
-			    criteriaBuilder.lessThanOrEqualTo(root.get("membersCount"),
-				  allianceSearch.getToMembersCount()));
+			    criteriaBuilder.equal(root.get("id"), allianceSearch.getId()));
 		}
+		return predicate;
+	}
 
-		if (allianceSearch.getFromTotalWins() != null) {
+	private Predicate namePredicate(Root<Alliance> root, CriteriaBuilder criteriaBuilder,
+	    Predicate predicate) {
+		if (allianceSearch.getName() != null) {
 			predicate = criteriaBuilder.and(predicate,
-			    criteriaBuilder.greaterThanOrEqualTo(root.get("totalWins"),
-				  allianceSearch.getFromTotalWins()));
+			    criteriaBuilder.like(root.get("name"), "%" + allianceSearch.getName() + "%"));
 		}
-
-		if (allianceSearch.getToTotalWins() != null) {
-			predicate = criteriaBuilder.and(predicate,
-			    criteriaBuilder.lessThanOrEqualTo(root.get("totalWins"),
-				  allianceSearch.getToTotalWins()));
-		}
-
 		return predicate;
 	}
 }

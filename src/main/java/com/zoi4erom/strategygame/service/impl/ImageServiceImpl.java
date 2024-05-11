@@ -49,7 +49,7 @@ public class ImageServiceImpl implements ImageService {
 	public String saveImageBase64(String base64Image, String oldPath,
 	    DefaultImagePatch defaultImagePatch) {
 		createUploadDirIfNeeded();
-		if (oldPath != null && defaultImagePatch != null){
+		if (oldPath != null && defaultImagePatch != null) {
 			if (!oldPath.equals(defaultImagePatch.getPath())) {
 				var imageUrl = uploadDir + File.separator + oldPath;
 				deleteImage(imageUrl);
@@ -95,7 +95,8 @@ public class ImageServiceImpl implements ImageService {
 	@AllArgsConstructor
 	public enum DefaultImagePatch {
 		USER_AVATAR("base/user-avatar.png"),
-		CLAN_AVATAR("base/clan-avatar.png");
+		CLAN_AVATAR("base/clan-avatar.png"),
+		ARTICLE_AVATAR("");
 		private final String path;
 	}
 }

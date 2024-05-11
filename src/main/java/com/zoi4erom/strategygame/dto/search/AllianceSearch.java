@@ -9,9 +9,6 @@ import lombok.Setter;
 @Builder
 public class AllianceSearch {
 
+	private Long id;
 	private String name;
-	private Integer fromMembersCount;
-	private Integer toMembersCount;
-	private Integer fromTotalWins;
-	private Integer toTotalWins;
 }
