@@ -3,17 +3,25 @@ package com.zoi4erom.strategygame.mapper;
 import com.zoi4erom.strategygame.dto.AllianceDto;
 import com.zoi4erom.strategygame.entity.Alliance;
 import com.zoi4erom.strategygame.service.impl.ImageServiceImpl;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper class responsible for mapping Alliance entities to AllianceDto objects and vice versa.
+ */
 @Component
 @RequiredArgsConstructor
 public class AllianceMapper implements Mapper<Alliance, AllianceDto> {
 
-	private final ImageServiceImpl imageService;
-	private final UserMapper userMapper;
+	private final ImageServiceImpl imageService; // Image service
+	private final UserMapper userMapper; // User mapper
 
+	/**
+	 * Maps an Alliance entity to an AllianceDto object.
+	 *
+	 * @param entity The Alliance entity to map.
+	 * @return The corresponding AllianceDto object.
+	 */
 	@Override
 	public AllianceDto toDto(Alliance entity) {
 		return AllianceDto.builder()
@@ -27,6 +35,12 @@ public class AllianceMapper implements Mapper<Alliance, AllianceDto> {
 		    .build();
 	}
 
+	/**
+	 * Maps an AllianceDto object to an Alliance entity.
+	 *
+	 * @param dto The AllianceDto object to map.
+	 * @return The corresponding Alliance entity.
+	 */
 	@Override
 	public Alliance toEntity(AllianceDto dto) {
 		return Alliance.builder()

@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 
 public interface UserService {
 
-	void createUser(AuthRequest authRequest);
+	boolean createUser(AuthRequest authRequest);
 
 	List<UserDto> getAllUsers();
 
@@ -43,4 +43,5 @@ public interface UserService {
 	void updateUserAlliance(Alliance alliance, Long id);
 
 	void updateUser(UpdateUserDto updateUserDto, String username);
+	void deleteUserById(Long id);
 }

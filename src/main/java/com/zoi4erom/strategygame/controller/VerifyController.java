@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller class for handling verification related endpoints.
+ */
 @RestController
 @RequestMapping("/verify")
 @CrossOrigin
@@ -19,6 +22,12 @@ public class VerifyController {
 
 	private final VerifyService verifyService;
 
+	/**
+	 * Endpoint for verifying user registration with a verification code.
+	 *
+	 * @param code Verification code
+	 * @return ResponseEntity indicating success or failure of the verification process
+	 */
 	@GetMapping("/registration")
 	public ResponseEntity<?> verifyRegistration(@RequestParam String code) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -30,6 +39,11 @@ public class VerifyController {
 		}
 	}
 
+	/**
+	 * Endpoint for sending a verification code to the authenticated user.
+	 *
+	 * @return ResponseEntity indicating success or failure of sending the verification code
+	 */
 	@GetMapping("/send-code")
 	public ResponseEntity<?> sendVerifyCode() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

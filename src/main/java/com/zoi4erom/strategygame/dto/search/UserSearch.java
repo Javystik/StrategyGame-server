@@ -16,6 +16,5 @@ public class UserSearch {
 	private Long id;
 	private String username;
 	private String email;
-	//private Range<LocalDateTime> createdAt;
 	private StatisticSearch statisticSearch;
 }

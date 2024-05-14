@@ -1,6 +1,5 @@
 package com.zoi4erom.strategygame.dto;
 
-import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import lombok.Builder;

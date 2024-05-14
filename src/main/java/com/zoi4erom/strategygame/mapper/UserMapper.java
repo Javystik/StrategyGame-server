@@ -6,14 +6,23 @@ import com.zoi4erom.strategygame.service.contract.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper class responsible for converting User entities to UserDto objects and vice versa.
+ */
 @Component
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<User, UserDto> {
 
-	private final StatisticMapper statisticMapper;
-	private final RoleMapper roleMapper;
-	private final ImageService imageService;
+	private final StatisticMapper statisticMapper; //Statistic mapper
+	private final RoleMapper roleMapper; //Role mapper
+	private final ImageService imageService; //Image service
 
+	/**
+	 * Converts a User entity to a UserDto object.
+	 *
+	 * @param entity The User entity to be converted.
+	 * @return The UserDto object representing the entity.
+	 */
 	@Override
 	public UserDto toDto(User entity) {
 		String clanTag = entity.getAlliance() != null ? entity.getAlliance().getTag() : null;
@@ -34,6 +43,12 @@ public class UserMapper implements Mapper<User, UserDto> {
 		    .build();
 	}
 
+	/**
+	 * Converts a UserDto object to a User entity.
+	 *
+	 * @param dto The UserDto object to be converted.
+	 * @return The User entity representing the DTO.
+	 */
 	@Override
 	public User toEntity(UserDto dto) {
 		return User.builder()

@@ -3,8 +3,6 @@ package com.zoi4erom.strategygame.controller;
 import com.zoi4erom.strategygame.dto.AuthRequest;
 import com.zoi4erom.strategygame.service.contract.AuthService;
 import com.zoi4erom.strategygame.service.contract.UserService;
-import com.zoi4erom.strategygame.service.impl.AuthServiceImpl;
-import com.zoi4erom.strategygame.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller class for handling user authentication and registration.
+ */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -27,13 +28,20 @@ public class AuthController {
 	private final AuthService authenticateService;
 	private final UserService userService;
 
+	/**
+	 * Endpoint for user login.
+	 *
+	 * @param authRequest Authentication request DTO containing username and password
+	 * @return ResponseEntity containing JWT token if authentication is successful, or
+	 * unauthorized status otherwise
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
 		try {
 			String token = authenticateService.authenticate(authRequest);
-			if(token != null){
+			if (token != null) {
 				return ResponseEntity.ok(token);
-			}else{
+			} else {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 		} catch (AuthenticationException e) {
@@ -42,12 +50,27 @@ public class AuthController {
 		}
 	}
 
+	/**
+	 * Endpoint for user registration.
+	 *
+	 * @param authRequest Authentication request DTO containing username and password
+	 * @return ResponseEntity indicating success or failure of the registration process
+	 */
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) {
-		return ResponseEntity.ok(authenticateService.createUser(authRequest));
+		String response = authenticateService.createUser(authRequest);
+		if (response == null) {
+			return ResponseEntity.badRequest().build();
+		} else {
+			return ResponseEntity.ok(response);
+		}
 	}
 
-
+	/**
+	 * Endpoint for checking if a user is authenticated.
+	 *
+	 * @return ResponseEntity indicating whether the user is authenticated or not
+	 */
 	@GetMapping("/check-authentication")
 	public ResponseEntity<?> checkAuthentication() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -59,6 +82,12 @@ public class AuthController {
 		}
 	}
 
+	/**
+	 * Endpoint for retrieving user information for the authenticated user.
+	 *
+	 * @return ResponseEntity containing user information if authenticated, or unauthorized status
+	 * otherwise
+	 */
 	@GetMapping("/info-for-me")
 	public ResponseEntity<?> infoForMe() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

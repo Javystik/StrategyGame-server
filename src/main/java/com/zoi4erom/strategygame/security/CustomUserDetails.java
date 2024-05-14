@@ -3,11 +3,13 @@ package com.zoi4erom.strategygame.security;
 import com.zoi4erom.strategygame.entity.User;
 import java.util.Collection;
 import lombok.AllArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * Custom implementation of UserDetails for Spring Security.
+ */
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 

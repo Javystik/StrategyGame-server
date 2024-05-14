@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UpdateUserAvatarDto {
+
 	private Long userId;
 	private String base64Image;
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ClanCreateDto {
+
 	private String name;
 	private String tag;
 }

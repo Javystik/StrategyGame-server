@@ -14,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuration class for setting up security filters and defining security rules for the
+ * application.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
@@ -22,6 +26,13 @@ public class SecurityConfig {
 
 	private final JwtRequestFilter jwtRequestFilter;
 
+	/**
+	 * Configures the security filter chain for the application.
+	 *
+	 * @param http The HttpSecurity object to configure security settings.
+	 * @return A SecurityFilterChain object representing the configured security filter chain.
+	 * @throws Exception If an error occurs while configuring security settings.
+	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf(AbstractHttpConfigurer::disable)
@@ -36,6 +47,11 @@ public class SecurityConfig {
 		    .build();
 	}
 
+	/**
+	 * Provides a PasswordEncoder bean for encoding passwords.
+	 *
+	 * @return A PasswordEncoder bean instance.
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

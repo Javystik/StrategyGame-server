@@ -4,9 +4,19 @@ import com.zoi4erom.strategygame.dto.StatisticDto;
 import com.zoi4erom.strategygame.entity.Statistic;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper class responsible for converting Statistic entities to StatisticDto objects and vice
+ * versa.
+ */
 @Component
-public class StatisticMapper implements Mapper<Statistic, StatisticDto>{
+public class StatisticMapper implements Mapper<Statistic, StatisticDto> {
 
+	/**
+	 * Converts a Statistic entity to a StatisticDto object.
+	 *
+	 * @param entity The Statistic entity to be converted.
+	 * @return The StatisticDto object representing the entity.
+	 */
 	@Override
 	public StatisticDto toDto(Statistic entity) {
 		return StatisticDto.builder()
@@ -20,6 +30,12 @@ public class StatisticMapper implements Mapper<Statistic, StatisticDto>{
 		    .build();
 	}
 
+	/**
+	 * Converts a StatisticDto object to a Statistic entity.
+	 *
+	 * @param dto The StatisticDto object to be converted.
+	 * @return The Statistic entity representing the DTO.
+	 */
 	@Override
 	public Statistic toEntity(StatisticDto dto) {
 		return Statistic.builder()

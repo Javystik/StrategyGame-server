@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller class for managing alliances within the game.
+ */
 @RestController
 @RequestMapping("/alliances")
 @AllArgsConstructor
@@ -31,6 +34,12 @@ public class AllianceController {
 	private final AllianceService allianceService;
 	private final UserService userService;
 
+	/**
+	 * Endpoint for creating a new alliance.
+	 *
+	 * @param clanCreateDto DTO containing information for creating the alliance
+	 * @return ResponseEntity indicating the success or failure of the operation
+	 */
 	@PostMapping
 	public ResponseEntity<String> createAlliance(@RequestBody ClanCreateDto clanCreateDto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,6 +52,14 @@ public class AllianceController {
 		}
 	}
 
+	/**
+	 * Endpoint for retrieving all alliances based on specified criteria and pagination.
+	 *
+	 * @param allianceSearch DTO containing search criteria
+	 * @param pageNo         Page number
+	 * @param pageSize       Number of items per page
+	 * @return ResponseEntity containing a page of alliance DTOs
+	 */
 	@PostMapping("/by-specification")
 	public ResponseEntity<Page<AllianceDto>> getAllAlliance(
 	    @RequestBody AllianceSearch allianceSearch,
@@ -55,6 +72,12 @@ public class AllianceController {
 		    : ResponseEntity.ok(allAlliances);
 	}
 
+	/**
+	 * Endpoint for retrieving an alliance by its ID.
+	 *
+	 * @param id ID of the alliance
+	 * @return ResponseEntity containing the alliance DTO if found, or indicating not found
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<AllianceDto> getAllianceById(@PathVariable Long id) {
 		return allianceService.getAllianceById(id)
@@ -62,6 +85,12 @@ public class AllianceController {
 		    .orElse(ResponseEntity.notFound().build());
 	}
 
+	/**
+	 * Endpoint for changing the avatar of a clan within an alliance.
+	 *
+	 * @param updateClanAvatarDto DTO containing information for updating the clan avatar
+	 * @return ResponseEntity indicating the success or failure of the operation
+	 */
 	@PutMapping
 	public ResponseEntity<?> changeClanAvatar(
 	    @RequestBody UpdateClanAvatarDto updateClanAvatarDto) {

@@ -6,13 +6,22 @@ import com.zoi4erom.strategygame.service.contract.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper class responsible for mapping Article entities to ArticleDto objects and vice versa.
+ */
 @Component
 @RequiredArgsConstructor
 public class ArticleMapper implements Mapper<Article, ArticleDto> {
 
-	private final UserMapper userMapper;
-	private final ImageService imageService;
+	private final UserMapper userMapper; //User mapper
+	private final ImageService imageService; //Image service
 
+	/**
+	 * Maps an Article entity to an ArticleDto object.
+	 *
+	 * @param entity The Article entity to map.
+	 * @return The corresponding ArticleDto object.
+	 */
 	@Override
 	public ArticleDto toDto(Article entity) {
 		return ArticleDto.builder()
@@ -24,6 +33,12 @@ public class ArticleMapper implements Mapper<Article, ArticleDto> {
 		    .build();
 	}
 
+	/**
+	 * Maps an ArticleDto object to an Article entity.
+	 *
+	 * @param dto The ArticleDto object to map.
+	 * @return The corresponding Article entity.
+	 */
 	@Override
 	public Article toEntity(ArticleDto dto) {
 		return Article.builder()

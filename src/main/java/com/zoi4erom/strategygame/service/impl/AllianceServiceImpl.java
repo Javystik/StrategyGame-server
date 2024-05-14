@@ -13,24 +13,39 @@ import com.zoi4erom.strategygame.service.contract.ImageService;
 import com.zoi4erom.strategygame.service.contract.UserService;
 import com.zoi4erom.strategygame.service.impl.ImageServiceImpl.DefaultImagePatch;
 import com.zoi4erom.strategygame.spec.AllianceSpecification;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+
+/**
+ * Implementation of the alliance service. This service provides methods for creating, retrieving,
+ * updating, and deleting alliances, as well as for changing the alliance avatar.
+ */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AllianceServiceImpl implements AllianceService {
 
-	private final AllianceRepository allianceRepository;
-	private final AllianceMapper allianceMapper;
-	private final UserService userService;
-	private final ImageService imageService;
+	private final AllianceRepository allianceRepository; // Alliance repository
+	private final AllianceMapper allianceMapper; // Mapper for converting alliance objects
+	private final UserService userService; // User service
+	private final ImageService imageService; // Image service
 
+	/**
+	 * Creates a new alliance with the specified data and leader.
+	 *
+	 * @param clanCreateDto Data for creating the alliance
+	 * @param leader        Leader of the alliance
+	 * @return true if the alliance is created successfully, false otherwise
+	 */
 	@Override
 	public boolean createAlliance(ClanCreateDto clanCreateDto, UserDto leader) {
 		var user = userService.getUserEntityById(leader.getId()).orElseThrow();
@@ -47,15 +62,26 @@ public class AllianceServiceImpl implements AllianceService {
 		try {
 			savedAlliance = allianceRepository.save(alliance);
 		} catch (Exception e) {
+			log.error("Error occurred while creating alliance: {}", e.getMessage());
 			return false;
 		}
 		userService.updateUserAlliance(savedAlliance, user.getId());
+		log.info("Alliance created successfully with id: {}", savedAlliance.getId());
 		return true;
 	}
 
+	/**
+	 * Retrieves a page of alliances based on the specified search criteria and pagination.
+	 *
+	 * @param allianceSearch Search criteria for alliances
+	 * @param pageNo         Page number
+	 * @param pageSize       Page size
+	 * @return Page of alliances
+	 */
 	@Override
 	public Page<AllianceDto> getAllAllianceBySpecificationAndPagination(
 	    AllianceSearch allianceSearch, int pageNo, int pageSize) {
+		log.info("Executing search query with specifications for alliance");
 		AllianceSpecification allianceSpecification = new AllianceSpecification(allianceSearch);
 		Sort sort = Sort.by(Sort.Direction.DESC, "totalWins");
 		Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -73,8 +99,15 @@ public class AllianceServiceImpl implements AllianceService {
 		return alliances.map(allianceMapper::toDto);
 	}
 
+	/**
+	 * Retrieves an alliance by the specified identifier and returns it as a DTO.
+	 *
+	 * @param id Identifier of the alliance
+	 * @return Optional object containing the alliance DTO if found
+	 */
 	@Override
 	public Optional<AllianceDto> getAllianceById(Long id) {
+		log.info("Retrieving alliance with id: {}", id);
 		return allianceRepository.findById(id)
 		    .map(alliance -> {
 			    Integer membersCount = allianceRepository.memberAllianceCount(id);
@@ -87,8 +120,17 @@ public class AllianceServiceImpl implements AllianceService {
 		    }).orElse(Optional.empty());
 	}
 
+
+	/**
+	 * Retrieves an alliance by the specified identifier and returns it as an entity.
+	 *
+	 * @param id Identifier of the alliance
+	 * @return Optional object containing the alliance entity if found
+	 * @throws NoSuchElementException If the alliance with the specified identifier is not found
+	 */
 	@Override
 	public Optional<Alliance> getAllianceEntityById(Long id) {
+		log.info("Retrieving alliance entity with id: {}", id);
 		var alliance = allianceRepository.findById(id).orElseThrow();
 
 		Integer membersCount = allianceRepository.memberAllianceCount(id);
@@ -100,8 +142,18 @@ public class AllianceServiceImpl implements AllianceService {
 		return Optional.of(alliance);
 	}
 
+	/**
+	 * Changes the avatar of the alliance with the specified user identifier.
+	 *
+	 * @param updateClanAvatarDto Object containing information about the alliance avatar change
+	 * @param username            Username making the changes
+	 * @return true if the alliance avatar is successfully changed, false otherwise
+	 * @throws NoSuchElementException If the alliance with the specified identifier is not found
+	 */
 	@Override
 	public boolean changeClanAvatar(UpdateClanAvatarDto updateClanAvatarDto, String username) {
+		log.info("Changing clan avatar for clan with id: {} by user: {}",
+		    updateClanAvatarDto.getClanId(), username);
 		var alliance = getAllianceEntityById(updateClanAvatarDto.getClanId()).get();
 		var user = userService.getUserByUsername(username).orElseThrow();
 
@@ -110,8 +162,11 @@ public class AllianceServiceImpl implements AllianceService {
 			    imageService.saveImageBase64(updateClanAvatarDto.getBase64Image(),
 				  alliance.getAvatarUrl(), DefaultImagePatch.CLAN_AVATAR));
 			allianceRepository.save(alliance);
+			log.info("Clan avatar changed successfully");
 			return true;
 		}
+		log.warn("User {} is not the leader of clan with id: {}", username,
+		    updateClanAvatarDto.getClanId());
 		return false;
 	}
 }

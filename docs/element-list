@@ -1,0 +1,14 @@
+com.zoi4erom.strategygame
+com.zoi4erom.strategygame.config
+com.zoi4erom.strategygame.controller
+com.zoi4erom.strategygame.dto
+com.zoi4erom.strategygame.dto.search
+com.zoi4erom.strategygame.entity
+com.zoi4erom.strategygame.exception
+com.zoi4erom.strategygame.mapper
+com.zoi4erom.strategygame.repository
+com.zoi4erom.strategygame.security
+com.zoi4erom.strategygame.service.contract
+com.zoi4erom.strategygame.service.impl
+com.zoi4erom.strategygame.spec
+com.zoi4erom.strategygame.utils

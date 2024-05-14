@@ -10,13 +10,29 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 
+/**
+ * Class representing a specification for searching users in the database. This class is used to
+ * create search conditions for users based on various criteria, such as identifier, username,
+ * email, and number of games won.
+ */
 @AllArgsConstructor
+@Slf4j
 public class UserSpecification implements Specification<User> {
 
 	transient UserSearch userSearch;
 
+
+	/**
+	 * Transforms the specification into a predicate for searching users.
+	 *
+	 * @param root            Root object of the query
+	 * @param query           Criteria query
+	 * @param criteriaBuilder Criteria builder
+	 * @return Predicate representing the search conditions for users
+	 */
 	@Override
 	public Predicate toPredicate(@NonNull Root<User> root, @NonNull CriteriaQuery<?> query,
 	    @NonNull CriteriaBuilder criteriaBuilder) {
@@ -28,6 +44,8 @@ public class UserSpecification implements Specification<User> {
 			predicate = addEmailPredicate(predicate, root, criteriaBuilder);
 			predicate = addWinGamesPredicate(predicate, root, criteriaBuilder);
 		}
+
+		log.info("Full predicate: {}", predicate);
 
 		return predicate;
 	}

@@ -14,7 +14,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -29,9 +28,7 @@ import lombok.ToString;
 
 @ToString
 @Entity
-@Table(name = "users",
-    uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
-	  @UniqueConstraint(columnNames = "email")})
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -45,7 +42,7 @@ public class User {
 
 	@Size(max = 40)
 	@NotEmpty
-	@Column(name = "username")
+	@Column(name = "username", unique = true)
 	private String username;
 
 	@NotEmpty
@@ -53,7 +50,7 @@ public class User {
 	private String password;
 
 	@Size(max = 40)
-	@Column(name = "email")
+	@Column(name = "email", unique = true)
 	private String email;
 
 	@NotNull
