@@ -15,42 +15,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "unit")
+@Table(name = "message")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Unit {
+public class Message {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull
-	private int currentHealthPoints;
+	private String text;
 
 	@NotNull
-	private boolean isAlive;
-
-	@NotNull
-	private int x;
-
-	@NotNull
-	private int y;
-
-	@ManyToOne
-	@JoinColumn(name = "game_id")
-	@NotNull
-	private Game game;
-
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@NotNull
 	private User user;
 
-	@ManyToOne
-	@JoinColumn(name = "unit_template_id")
 	@NotNull
-	private UnitTemplate unitTemplate;
+	@ManyToOne
+	@JoinColumn(name = "game_id")
+	private Game game;
 }

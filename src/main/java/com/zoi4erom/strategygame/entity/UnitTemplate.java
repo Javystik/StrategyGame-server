@@ -1,5 +1,6 @@
 package com.zoi4erom.strategygame.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,42 +16,41 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "unit")
+@Table(name = "unit_template")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class Unit {
+public class UnitTemplate {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull
-	private int currentHealthPoints;
+	private String name;
 
 	@NotNull
-	private boolean isAlive;
+	private int cost;
 
 	@NotNull
-	private int x;
+	private int reload;
 
 	@NotNull
-	private int y;
+	@Column(name = "health_points")
+	private int healthPoints;
+
+	@NotNull
+	private int damage;
+
+	@NotNull
+	private int speed;
+
+	@NotNull
+	private int range;
 
 	@ManyToOne
-	@JoinColumn(name = "game_id")
-	@NotNull
-	private Game game;
-
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	@NotNull
-	private User user;
-
-	@ManyToOne
-	@JoinColumn(name = "unit_template_id")
-	@NotNull
-	private UnitTemplate unitTemplate;
+	@JoinColumn(name = "unit_type_id")
+	private UnitType unitType;
 }

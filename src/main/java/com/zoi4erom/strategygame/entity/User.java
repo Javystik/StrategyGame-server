@@ -19,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -81,6 +82,9 @@ public class User {
 	private String verificationCode;
 	private Boolean isVerified;
 	private LocalDateTime codeDeathTime;
+
+	@ManyToMany(mappedBy = "userList")
+	private List<Game> gameList;
 
 	@PrePersist
 	public void prePersist() {

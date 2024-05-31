@@ -1,11 +1,13 @@
 package com.zoi4erom.strategygame.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,42 +17,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "unit")
+@Table(name = "player_resources")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-public class Unit {
+public class PlayerResource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
-	private int currentHealthPoints;
-
-	@NotNull
-	private boolean isAlive;
-
-	@NotNull
-	private int x;
-
-	@NotNull
-	private int y;
-
-	@ManyToOne
-	@JoinColumn(name = "game_id")
-	@NotNull
-	private Game game;
-
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@NotNull
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "unit_template_id")
+	@JoinColumn(name = "game_id")
+	private Game game;
+
 	@NotNull
-	private UnitTemplate unitTemplate;
+	@Column(name = "resources")
+	private int resources;
 }

@@ -29,4 +29,8 @@ public class UnitType {
 	@NotNull
 	@Size(max = 30)
 	private String name;
+
+	@NotNull
+	@Size(max = 30)
+	private String size;
 }
